@@ -71,7 +71,7 @@ class Omnimesh < Formula
     end
 
     # --- Build OmniMesh binaries using the Makefile at repo root ---
-    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make build-all"
+    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -C Omnimesh build-all"
 
     # -----------------------------------------------------------------------
     # Stage JS resources under pkgshare so users can run `yarn install` or use
