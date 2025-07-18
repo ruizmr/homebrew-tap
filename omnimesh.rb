@@ -60,11 +60,15 @@ class Omnimesh < Formula
     FileUtils.mkdir_p("social-app/android/app")
     File.write("social-app/android/app/google-services.json", dummy_gs) unless File.exist?("social-app/android/app/google-services.json")
 
-    # Patch upstream go.work to use correct relative path (Homebrew clone depth)
+    rm_f buildpath/"Omnimesh/go.work"
+
     if (buildpath/"go.work").exist?
       inreplace "go.work", "../social-app/bskyweb", "./social-app/bskyweb"
       inreplace "go.work", "../Omnimesh", "./" if File.read("go.work").include?("../Omnimesh")
     end
+
+    # Force Go to use the root workspace file
+    ENV["GOFLAGS"] = "-workfile=#{buildpath}/go.work"
 
     # --- Build OmniMesh binaries using the Makefile at repo root ---
     system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make build-all"
