@@ -50,6 +50,7 @@ class Omnimesh < Formula
       system "bash", "-c", "yarn build || true"
       # Ensure at least one file so go:embed passes even on CI/minimal builds
       if Dir["static/dist/**/*"].empty?
+        FileUtils.mkdir_p("static/dist")
         File.write("static/dist/placeholder.txt", "placeholder")
       end
     end
