@@ -1,8 +1,8 @@
 class Omnimesh < Formula
   desc "Sovereign, content-addressed compute"
-  homepage "https://github.com/omnimesh/omnimesh"
+  homepage "https://github.com/ruizmr/omnimesh"
   # HEAD-only formula until we start cutting signed releases
-  head "https://github.com/omnimesh/omnimesh.git", branch: "main"
+  head "https://github.com/ruizmr/omnimesh.git", branch: "main"
   version "0.6.1"
 
   # Build dependencies
