@@ -65,13 +65,13 @@ class Omnimesh < Formula
       (buildpath/"go.work").write <<~EOS
         go 1.24
 
-        use ./Omnimesh
+        use .
         use ./social-app/bskyweb
       EOS
     end
 
     # --- Build OmniMesh binaries using the Makefile at repo root ---
-    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -C Omnimesh build-all"
+    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make build-all"
 
     # -----------------------------------------------------------------------
     # Stage JS resources under pkgshare so users can run `yarn install` or use
