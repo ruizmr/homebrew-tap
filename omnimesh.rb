@@ -43,6 +43,12 @@ class Omnimesh < Formula
       (buildpath/"social-app").install Dir["*"]
     end
 
+    # Inject dummy google-services.json so Expo config plugin doesn't break CI
+    dummy_gs = "{}\n"
+    File.write("social-app/google-services.json", dummy_gs) unless File.exist?("social-app/google-services.json")
+    FileUtils.mkdir_p("social-app/android/app")
+    File.write("social-app/android/app/google-services.json", dummy_gs) unless File.exist?("social-app/android/app/google-services.json")
+
     # --- Build Bluesky web assets so `go vet` succeeds later ---
     cd "social-app/bskyweb" do
       system "yarn", "install", "--frozen-lockfile", "--ignore-scripts"
@@ -55,21 +61,17 @@ class Omnimesh < Formula
       end
     end
 
-    # Inject dummy google-services.json so Expo config plugin doesn't break CI
-    dummy_gs = "{}\n"
-    File.write("social-app/google-services.json", dummy_gs) unless File.exist?("social-app/google-services.json")
-    FileUtils.mkdir_p("social-app/android/app")
-    File.write("social-app/android/app/google-services.json", dummy_gs) unless File.exist?("social-app/android/app/google-services.json")
-
-    rm_f buildpath/"Omnimesh/go.work"
+    # rm_f buildpath/"Omnimesh/go.work"
 
     if (buildpath/"go.work").exist?
       inreplace "go.work", "../social-app/bskyweb", "./social-app/bskyweb"
-      inreplace "go.work", "../Omnimesh", "./" if File.read("go.work").include?("../Omnimesh")
+      inreplace "go.work", "../Omnimesh", "./Omnimesh" if File.read("go.work").include?("../Omnimesh")
+      inreplace "go.work", "../atproto", "./atproto" if File.read("go.work").include?("../atproto")
     end
 
     # Force Go to use the root workspace file
-    ENV["GOFLAGS"] = "-workfile=#{buildpath}/go.work"
+    # ENV["GOFLAGS"] = "-workfile=#{buildpath}/go.work"
+    system "go", "work", "sync"
 
     # --- Build OmniMesh binaries using the Makefile at repo root ---
     system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make build-all"
