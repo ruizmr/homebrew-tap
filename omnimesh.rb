@@ -70,8 +70,8 @@ class Omnimesh < Formula
       EOS
     end
 
-    # --- Build OmniMesh binaries (runs Makefile but from repo root) ---
-    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -f Omnimesh/Makefile build"
+    # --- Build OmniMesh binaries using the Makefile at repo root ---
+    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make build-all"
 
     # -----------------------------------------------------------------------
     # Stage JS resources under pkgshare so users can run `yarn install` or use
