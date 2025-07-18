@@ -1,14 +1,13 @@
 class Omnimesh < Formula
   desc "Sovereign, content-addressed compute"
   homepage "https://github.com/omnimesh/omnimesh"
-  url "https://github.com/omnimesh/omnimesh/archive/refs/tags/v2024.10.01.tar.gz"
+  url "https://github.com/ruizmr/omnimesh/archive/refs/tags/v2024.10.01.tar.gz"
   sha256 "placeholder"  # Update with actual sha
   license "MIT"
   head "https://github.com/omnimesh/omnimesh.git", branch: "main"
 
   depends_on "go" => :build
   depends_on "ipfs"
-  depends_on "ray"
 
   def install
     system "go", "build", "-o", bin/"mesh-run", "./cmd/mesh-run"
