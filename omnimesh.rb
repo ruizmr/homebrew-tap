@@ -60,8 +60,16 @@ class Omnimesh < Formula
     FileUtils.mkdir_p("social-app/android/app")
     File.write("social-app/android/app/google-services.json", dummy_gs) unless File.exist?("social-app/android/app/google-services.json")
 
-    # Build OmniMesh binaries
-    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -C Omnimesh build"
+    # --- After staging resources, create a workspace so Go tooling resolves modules ---
+    (buildpath/"go.work").write <<~EOS
+      go 1.24
+
+      use ./Omnimesh
+      use ./social-app/bskyweb
+    EOS
+
+    # --- Build OmniMesh binaries (runs Makefile but from repo root) ---
+    system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -f Omnimesh/Makefile build"
 
     # -----------------------------------------------------------------------
     # Stage JS resources under pkgshare so users can run `yarn install` or use
@@ -80,7 +88,7 @@ class Omnimesh < Formula
     end
 
     # Install primary binaries
-    bin.install "Omnimesh/bin/mesh-run", "Omnimesh/bin/meshd", "Omnimesh/bin/mcpd", "Omnimesh/bin/mesh-api"
+    bin.install "bin/mesh-run", "bin/meshd", "bin/mcpd", "bin/mesh-api", "bin/bskyweb"
   end
 
   service do
