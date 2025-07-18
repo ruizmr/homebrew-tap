@@ -61,12 +61,14 @@ class Omnimesh < Formula
     File.write("social-app/android/app/google-services.json", dummy_gs) unless File.exist?("social-app/android/app/google-services.json")
 
     # --- After staging resources, create a workspace so Go tooling resolves modules ---
-    (buildpath/"go.work").write <<~EOS
-      go 1.24
+    unless (buildpath/"go.work").exist?
+      (buildpath/"go.work").write <<~EOS
+        go 1.24
 
-      use ./Omnimesh
-      use ./social-app/bskyweb
-    EOS
+        use ./Omnimesh
+        use ./social-app/bskyweb
+      EOS
+    end
 
     # --- Build OmniMesh binaries (runs Makefile but from repo root) ---
     system "bash", "-c", "YARN_IGNORE_SCRIPTS=1 make -f Omnimesh/Makefile build"
